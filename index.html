@@ -389,11 +389,48 @@ body {
   .airline-card { flex-direction: column; align-items: center; text-align: center; }
   .airline-logo { width: 44px; height: 44px; }
 }
+.announcement-toast {
+  position: fixed; top: -80px; left: 50%; transform: translateX(-50%); z-index: 200;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background: rgba(79, 195, 247, 0.18);
+  border: 1px solid rgba(79, 195, 247, 0.35);
+  border-radius: 16px;
+  padding: 14px 28px;
+  color: #fff; font-size: 0.9rem; font-weight: 600;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 0 20px rgba(79, 195, 247, 0.3);
+  display: flex; align-items: center; gap: 10px;
+  transition: top 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+.announcement-toast.show { top: 24px; }
+.announcement-toast .toast-icon {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: rgba(79, 195, 247, 0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem;
+}
+.announcement-toast .toast-close {
+  margin-left: 8px; cursor: pointer;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; border: none; color: #fff;
+  transition: background 0.3s;
+}
+.announcement-toast .toast-close:hover { background: rgba(255,255,255,0.25); }
 </style>
 </head>
 <body>
 
 <div class="stars-layer" id="starsLayer"></div>
+<div class="announcement-toast" id="announceToast">
+  <span class="toast-icon">&#9992;</span>
+  <span>机型照片已更新，点击卡片可查看大图</span>
+  <button class="toast-close" onclick="dismissToast()">&times;</button>
+</div>
 
 <div class="app-container">
   <div class="header">
@@ -475,6 +512,8 @@ function placeholdImage(img, name, code, category) {
 // ===== 图片代理：解决维基图片国内加载问题 =====
 function proxyUrl(url) {
   if (!url || (!url.includes('wikimedia.org') && !url.includes('wikipedia.org'))) return url;
+  // thumb.php URLs are served directly from commons and accessible in China
+  if (url.includes('thumb.php')) return url;
   return 'https://wsrv.nl/?url=' + encodeURIComponent(url.replace(/^https?:\/\//, '')) + '&w=800&output=webp';
 }
 
@@ -599,7 +638,7 @@ const aircrafts = [
   {
     id: 1, name: '空客 A380', code: 'Airbus A380',
     category: 'civil', country: '欧洲',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/0/09/A6-EDY_A380_Emirates_31_jan_2013_jfk_%288442269364%29.jpg',
+    image: 'https://commons.wikimedia.org/w/thumb.php?f=A6-EDY_A380_Emirates_31_jan_2013_jfk_(8442269364).jpg&w=800',
     desc: '空客A380是全球最大的双层宽体客机，2005年首飞，2007年投入商业运营。标准三舱布局可载525-853名乘客，航程达15,200公里。两层全通式客舱和安静的客舱环境重新定义了长途飞行体验。',
     specs: { '巡航速度': '0.85 马赫', '最大航程': '15,200 km', '载客量': '525–853 人', '翼展': '79.75 m' },
     airlineIds: ['ek', 'sq', 'ba', 'af', 'lh', 'ey']
@@ -607,7 +646,7 @@ const aircrafts = [
   {
     id: 2, name: '波音 787-9 梦想客机', code: 'Boeing 787-9',
     category: 'civil', country: '美国',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/4/46/United_Airlines_Boeing_787-8_%28N27903%29.jpg',
+    image: 'https://commons.wikimedia.org/w/thumb.php?f=Japan_Airlines_Boeing_787-9_JA861J.jpg&w=800',
     desc: '波音787-9是787系列的加长型号，2013年首飞。机身大量采用碳纤维复合材料，比同规格客机节油20%。电致变色舷窗、更高的客舱湿度和更低的舱压大幅提升乘客舒适度。',
     specs: { '巡航速度': '0.85 马赫', '最大航程': '14,140 km', '载客量': '242–330 人', '翼展': '60.12 m' },
     airlineIds: ['ua', 'nh', 'ba', 'cz']
@@ -615,7 +654,7 @@ const aircrafts = [
   {
     id: 3, name: '空客 A350-900 XWB', code: 'Airbus A350-900',
     category: 'civil', country: '欧洲',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/9/9a/Airbus_A350-941_F-WWCF_MSN002_ILA_Berlin_2016_%28cropped%29.jpg',
+    image: 'https://commons.wikimedia.org/w/thumb.php?f=Airbus_A350-941_F-WWCF_MSN002_ILA_Berlin_2016_17.jpg&w=800',
     desc: '空客A350-900是新一代远程宽体客机，2015年投入运营。配备罗尔斯·罗伊斯遄达XWB发动机，客舱宽度比787多约13厘米，噪音降低30%，燃油效率较上一代提升25%。',
     specs: { '巡航速度': '0.85 马赫', '最大航程': '15,000 km', '载客量': '300–440 人', '翼展': '64.75 m' },
     airlineIds: ['sq', 'qr', 'cx', 'ay', 'lh', 'tk']
@@ -623,7 +662,7 @@ const aircrafts = [
   {
     id: 4, name: '波音 777-300ER', code: 'Boeing 777-300ER',
     category: 'civil', country: '美国',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/8/83/Emirates_Boeing_777-300ER_A6-ECZ.jpg',
+    image: 'https://commons.wikimedia.org/w/thumb.php?f=Qatar_Boeing_777-300ER_A7-BEP_IAD_VA1.jpg&w=800',
     desc: '波音777-300ER是全球最畅销的远程宽体客机之一，2004年投入运营。配备GE90-115B发动机，以出色的双发延程飞行能力跨洋运营。',
     specs: { '巡航速度': '0.84 马赫', '最大航程': '13,650 km', '载客量': '368–550 人', '翼展': '64.8 m' },
     airlineIds: ['ek', 'ua', 'cx', 'af', 'tk', 'ba']
@@ -631,7 +670,7 @@ const aircrafts = [
   {
     id: 5, name: '中国商飞 C919', code: 'COMAC C919',
     category: 'civil', country: '中国',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Comac_C919_at_Vladivostok_2024.jpg',
+    image: 'https://commons.wikimedia.org/w/thumb.php?f=COMAC_B-001A_May_2017.jpg&w=800',
     desc: 'C919是中国首款按国际适航标准研制的干线单通道客机，2017年首飞，2023年商业运营。采用先进气动设计和LEAP-1C发动机，与A320neo和737 MAX同级别竞争，代表中国民用航空制造业的重大突破。',
     specs: { '巡航速度': '0.785 马赫', '最大航程': '5,555 km', '载客量': '158–192 人', '翼展': '35.8 m' },
     airlineIds: ['mu', 'ca', 'cz']
@@ -639,7 +678,7 @@ const aircrafts = [
   {
     id: 6, name: '空客 A320neo', code: 'Airbus A320neo',
     category: 'civil', country: '欧洲',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/8/86/Airbus_A320neo_prototype_F-WNEW.jpg',
+    image: 'https://commons.wikimedia.org/w/thumb.php?f=Frontier_Airbus_A320neo_N353FR_BWI_MD1.jpg&w=800',
     desc: '空客A320neo是全球最畅销的单通道客机系列，2016年投入运营。换装新一代发动机后燃油效率提升15-20%，噪音降低50%。截至2025年订单已超10,000架。',
     specs: { '巡航速度': '0.78 马赫', '最大航程': '6,300 km', '载客量': '150–194 人', '翼展': '35.8 m' },
     airlineIds: ['ca', 'cz', 'lh', 'tk', 'ba']
@@ -647,7 +686,7 @@ const aircrafts = [
   {
     id: 7, name: '波音 737 MAX 8', code: 'Boeing 737 MAX 8',
     category: 'civil', country: '美国',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/7/78/United_Airlines_Boeing_737_MAX_9_N37504.jpg',
+    image: 'https://commons.wikimedia.org/w/thumb.php?f=Southwest_Boeing_737-8_MAX_N8847Q_BWI_MD2.jpg&w=800',
     desc: '波音737 MAX 8是737系列最新一代，2017年投入运营。配备CFM LEAP-1B发动机和先进技术翼梢小翼，燃油效率较737NG提升14%。经过全面升级后，安全性已得到充分验证和监管认可。',
     specs: { '巡航速度': '0.79 马赫', '最大航程': '6,570 km', '载客量': '162–210 人', '翼展': '35.92 m' },
     airlineIds: ['ua', 'cz', 'tk']
@@ -655,7 +694,7 @@ const aircrafts = [
   {
     id: 8, name: '空客 A330-300', code: 'Airbus A330-300',
     category: 'civil', country: '欧洲',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Turkish_Airlines_Airbus_A330-300_TC-JOC.jpg',
+    image: 'https://commons.wikimedia.org/w/thumb.php?f=Swiss_Airbus_A330-300_HB-JHM_IAD_VA1.jpg&w=800',
     desc: '空客A330-300是畅销的中远程宽体客机，1994年投入运营，经过多轮升级至今仍在生产。以出色的运营经济性和客舱舒适度在中远程航线广泛使用，是中国航空公司宽体机队的核心机型之一。',
     specs: { '巡航速度': '0.82 马赫', '最大航程': '11,750 km', '载客量': '277–440 人', '翼展': '60.3 m' },
     airlineIds: ['ca', 'mu', 'cz', 'tk', 'cx']
@@ -663,7 +702,7 @@ const aircrafts = [
   {
     id: 9, name: '巴航工业 E195-E2', code: 'Embraer E195-E2',
     category: 'civil', country: '巴西',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/7/78/Embraer_E195-E2_PR-ZIQ.jpg',
+    image: 'https://commons.wikimedia.org/w/thumb.php?f=Embraer_E195-E2_PR-ZIQ.jpg&w=800',
     desc: '巴航工业E195-E2是E-Jet E2系列中最大的型号，2019年投入运营。采用全新普惠PW1900G齿轮涡扇发动机和全新机翼，燃油效率提升25%，是130座级最省油的单通道喷气客机。',
     specs: { '巡航速度': '0.8 马赫', '最大航程': '4,800 km', '载客量': '120–146 人', '翼展': '35.1 m' },
     airlineIds: ['lh']
@@ -671,44 +710,44 @@ const aircrafts = [
   {
     id: 10, name: '空客 A220-300', code: 'Airbus A220-300',
     category: 'civil', country: '加拿大/欧洲',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/1/1f/AirBaltic_A220-300_YL-AAU.jpg',
+    image: 'https://commons.wikimedia.org/w/thumb.php?f=Airbus_A220-300.jpg&w=800',
     desc: '空客A220-300（原庞巴迪CS300）是一款极具创新性的支线/窄体客机，2016年投入运营。采用大量复合材料和普惠齿轮涡扇发动机，客舱最宽、舷窗最大，燃油效率极佳。',
     specs: { '巡航速度': '0.82 马赫', '最大航程': '6,300 km', '载客量': '130–160 人', '翼展': '35.1 m' },
     airlineIds: ['ay', 'dl']
   },
   {
     id: 20, name: 'F-22 猛禽', code: 'F-22 Raptor', category: 'fighter', country: '美国',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/8/8d/Lockheed_Martin_F-22A_Raptor_JSOH.jpg',
+    image: 'https://commons.wikimedia.org/w/thumb.php?f=Lockheed_Martin_F-22A_Raptor_JSOH.jpg&w=800',
     desc: '世界上第一款第五代隐形空优战斗机，1997年首飞。兼具隐身、超巡、超机动性和先进航电。',
     specs: { '最大速度': '2.25 马赫', '作战半径': '850 km', '升限': '20,000 m', '翼展': '13.56 m' }
   },
   {
     id: 21, name: '歼-20 威龙', code: 'J-20', category: 'fighter', country: '中国',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/Chengdu_J-20_at_Airshow_China_2018_%28cropped%29.jpg',
+    image: 'https://commons.wikimedia.org/w/thumb.php?f=J-20_at_Airshow_China_2016.jpg&w=800',
     desc: '中国首款第五代双发重型隐形战斗机，2017年服役，具备高隐身性和超机动性。',
     specs: { '最大速度': '2.0 马赫', '作战半径': '1,200 km', '升限': '20,000 m', '翼展': '13.01 m' }
   },
   {
     id: 22, name: 'B-2 幽灵', code: 'B-2 Spirit', category: 'bomber', country: '美国',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/b/b0/B-2_Spirit_original.jpg',
+    image: 'https://commons.wikimedia.org/w/thumb.php?f=B-2_Spirit_original.jpg&w=800',
     desc: '全球唯一隐身战略轰炸机，飞翼布局，雷达反射截积极小，单架造价约24亿美元。',
     specs: { '最大速度': '0.95 马赫', '作战半径': '11,000 km', '升限': '15,200 m', '翼展': '52.4 m' }
   },
   {
     id: 23, name: 'C-17 环球霸王 III', code: 'C-17', category: 'transport', country: '美国',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/1/1b/C-17_Globemaster_III_4.jpg',
+    image: 'https://commons.wikimedia.org/w/thumb.php?f=C-17_Globemaster_III_4.jpg&w=800',
     desc: '大型战略战术运输机，最大载重77吨，可短距起降于未铺设跑道。',
     specs: { '巡航速度': '0.74 马赫', '航程': '10,390 km', '载重': '77 吨', '翼展': '51.75 m' }
   },
   {
     id: 24, name: '运-20 鲲鹏', code: 'Y-20', category: 'transport', country: '中国',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Xian_Y-20_at_Airshow_China_2018.jpg',
+    image: 'https://commons.wikimedia.org/w/thumb.php?f=Y-20_at_Airshow_China_2016.jpg&w=800',
     desc: '中国自主研发大型运输机，最大起飞重量220吨，填补战略运输空白。',
     specs: { '巡航速度': '0.75 马赫', '航程': '7,800 km', '载重': '66 吨', '翼展': '45 m' }
   },
   {
     id: 25, name: 'AH-64 阿帕奇', code: 'AH-64 Apache', category: 'helicopter', country: '美国',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/e/ee/AH-64D_Apache_Longbow.jpg',
+    image: 'https://commons.wikimedia.org/w/thumb.php?f=AH-64D_Apache_Longbow.jpg&w=800',
     desc: '全球最先进武装直升机之一，可挂载16枚地狱火导弹，被誉为坦克杀手。',
     specs: { '最大速度': '293 km/h', '作战半径': '480 km', '升限': '6,400 m', '旋翼直径': '14.63 m' }
   }
@@ -896,6 +935,15 @@ function createStars() {
   layer.appendChild(frag);
 }
 
+function showToast() {
+  const toast = document.getElementById('announceToast');
+  setTimeout(() => toast.classList.add('show'), 400);
+  setTimeout(() => dismissToast(), 6000);
+}
+function dismissToast() {
+  document.getElementById('announceToast').classList.remove('show');
+}
+showToast();
 createStars();
 renderCountryBar();
 renderCards();
