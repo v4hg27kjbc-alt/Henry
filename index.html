@@ -428,7 +428,7 @@ body {
 <div class="stars-layer" id="starsLayer"></div>
 <div class="announcement-toast" id="announceToast">
   <span class="toast-icon">&#9992;</span>
-  <span>机型照片已更新，点击卡片可查看大图</span>
+  <span>机型照片 &amp; 航司Logo已更新，点击卡片可查看大图</span>
   <button class="toast-close" onclick="dismissToast()">&times;</button>
 </div>
 
@@ -511,7 +511,7 @@ function placeholdImage(img, name, code, category) {
 
 // ===== 图片代理：解决维基图片国内加载问题 =====
 function proxyUrl(url) {
-  if (!url || (!url.includes('wikimedia.org') && !url.includes('wikipedia.org'))) return url;
+  if (!url || (!url.includes('wikimedia.org') && !url.includes('wikipedia.org') && !url.includes('clearbit.com'))) return url;
   // thumb.php URLs are served directly from commons and accessible in China
   if (url.includes('thumb.php')) return url;
   return 'https://wsrv.nl/?url=' + encodeURIComponent(url.replace(/^https?:\/\//, '')) + '&w=800&output=webp';
@@ -522,112 +522,112 @@ const airlines = {
   'ua': {
     id: 'ua', name: '美国联合航空', nameEn: 'United Airlines',
     country: '美国', code: 'UA',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/United_Airlines_Logo.svg/200px-United_Airlines_Logo.svg.png',
+    logo: 'https://logo.clearbit.com/united.com?size=200',
     desc: '美国联合航空成立于1926年，是全球航线网络最广的航空公司之一，星空联盟创始成员。总部位于芝加哥，机队规模超过900架，通航六大洲350+目的地。',
     website: 'https://www.united.com'
   },
   'dl': {
     id: 'dl', name: '达美航空', nameEn: 'Delta Air Lines',
     country: '美国', code: 'DL',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Delta_logo.svg/200px-Delta_logo.svg.png',
+    logo: 'https://logo.clearbit.com/delta.com?size=200',
     desc: '达美航空是全球第二大航空公司（按客运量），天合联盟创始成员，总部位于亚特兰大。运营超过900架飞机，日均航班超5000班次，以运营可靠性和准点率著称。',
     website: 'https://www.delta.com'
   },
   'ca': {
     id: 'ca', name: '中国国际航空', nameEn: 'Air China',
     country: '中国', code: 'CA',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Air_China_logo.svg/200px-Air_China_logo.svg.png',
+    logo: 'https://logo.clearbit.com/airchina.com.cn?size=200',
     desc: '中国国际航空是中国载旗航空公司，星空联盟成员，总部位于北京。拥有中国最大的宽体机队，执飞全球近200个目的地，以安全记录和优质国际航线服务闻名。',
     website: 'https://www.airchina.com.cn'
   },
   'mu': {
     id: 'mu', name: '中国东方航空', nameEn: 'China Eastern Airlines',
     country: '中国', code: 'MU',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/China_Eastern_Airlines_logo.svg/200px-China_Eastern_Airlines_logo.svg.png',
+    logo: 'https://logo.clearbit.com/ceair.com?size=200',
     desc: '中国东方航空总部位于上海，天合联盟成员，拥有超过600架现代化飞机。以上海浦东和虹桥为双枢纽，是全球C919客机的首发商业运营商。',
     website: 'https://www.ceair.com'
   },
   'cz': {
     id: 'cz', name: '中国南方航空', nameEn: 'China Southern Airlines',
     country: '中国', code: 'CZ',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/China_Southern_Airlines_logo.svg/200px-China_Southern_Airlines_logo.svg.png',
+    logo: 'https://logo.clearbit.com/csair.com?size=200',
     desc: '中国南方航空总部位于广州，是亚洲机队规模最大、年客运量最大的航空公司之一。运营超过650架飞机，以广州白云和北京大兴为双枢纽，航线网络覆盖全球。',
     website: 'https://www.csair.com'
   },
   'ek': {
     id: 'ek', name: '阿联酋航空', nameEn: 'Emirates',
     country: '阿联酋', code: 'EK',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Emirates_logo.svg/200px-Emirates_logo.svg.png',
+    logo: 'https://logo.clearbit.com/emirates.com?size=200',
     desc: '阿联酋航空是全球最大的A380和波音777运营商，总部位于迪拜。以极致奢华服务和"空中五星级酒店"体验闻名，机队全部为宽体机，通航六大洲160+目的地。',
     website: 'https://www.emirates.com'
   },
   'sq': {
     id: 'sq', name: '新加坡航空', nameEn: 'Singapore Airlines',
     country: '新加坡', code: 'SQ',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Singapore_Airlines_Logo.svg/200px-Singapore_Airlines_Logo.svg.png',
+    logo: 'https://logo.clearbit.com/singaporeair.com?size=200',
     desc: '新加坡航空是全球评级最高的航空公司之一，星空联盟成员。以卓越服务、创新客舱产品和"新加坡女孩"品牌形象著称，连续多年获Skytrax五星评级。',
     website: 'https://www.singaporeair.com'
   },
   'qr': {
     id: 'qr', name: '卡塔尔航空', nameEn: 'Qatar Airways',
     country: '卡塔尔', code: 'QR',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Qatar_Airways_Logo.svg/200px-Qatar_Airways_Logo.svg.png',
+    logo: 'https://logo.clearbit.com/qatarairways.com?size=200',
     desc: '卡塔尔航空是寰宇一家成员，总部位于多哈。以全球最佳商务舱Qsuite和哈马德国际机场旗舰枢纽闻名，多次获Skytrax年度最佳航空公司大奖。',
     website: 'https://www.qatarairways.com'
   },
   'nh': {
     id: 'nh', name: '全日空', nameEn: 'All Nippon Airways',
     country: '日本', code: 'NH',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/All_Nippon_Airways_Logo.svg/200px-All_Nippon_Airways_Logo.svg.png',
+    logo: 'https://logo.clearbit.com/ana.co.jp?size=200',
     desc: '全日空（ANA）是日本最大航空公司，星空联盟成员，总部位于东京。以精细的日式服务、出色的准点率和787机队规模（全球最多）著称，连续多年获Skytrax五星评级。',
     website: 'https://www.ana.co.jp'
   },
   'lh': {
     id: 'lh', name: '汉莎航空', nameEn: 'Lufthansa',
     country: '德国', code: 'LH',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Lufthansa_Logo_2018.svg/200px-Lufthansa_Logo_2018.svg.png',
+    logo: 'https://logo.clearbit.com/lufthansa.com?size=200',
     desc: '汉莎航空是欧洲最大航空集团，星空联盟创始成员，总部位于法兰克福。以严谨的德国工程精神运营超过300架飞机，法兰克福和慕尼黑为双枢纽，覆盖全球200+目的地。',
     website: 'https://www.lufthansa.com'
   },
   'ba': {
     id: 'ba', name: '英国航空', nameEn: 'British Airways',
     country: '英国', code: 'BA',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/British_Airways_Logo.svg/200px-British_Airways_Logo.svg.png',
+    logo: 'https://logo.clearbit.com/britishairways.com?size=200',
     desc: '英国航空是英国载旗航空公司，寰宇一家创始成员。以伦敦希思罗为超级枢纽，执飞全球近200个目的地，以英伦优雅服务和协和号超音速客机的历史遗产而闻名。',
     website: 'https://www.britishairways.com'
   },
   'af': {
     id: 'af', name: '法国航空', nameEn: 'Air France',
     country: '法国', code: 'AF',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Air_France_Logo.svg/200px-Air_France_Logo.svg.png',
+    logo: 'https://logo.clearbit.com/airfrance.com?size=200',
     desc: '法国航空是法国载旗航空公司，天合联盟创始成员，总部位于巴黎。以巴黎戴高乐为枢纽，将法式生活艺术融入飞行体验，头等舱La Première被称为空中最奢华的旅程之一。',
     website: 'https://www.airfrance.com'
   },
   'ey': {
     id: 'ey', name: '阿提哈德航空', nameEn: 'Etihad Airways',
     country: '阿联酋', code: 'EY',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Etihad_Airways_logo.svg/200px-Etihad_Airways_logo.svg.png',
+    logo: 'https://logo.clearbit.com/etihad.com?size=200',
     desc: '阿提哈德航空是阿联酋国家航空公司，总部位于阿布扎比。以空中官邸The Residence套房和创新的经济舱智能座椅闻名，将阿拉伯式奢华待客之道带上天空。',
     website: 'https://www.etihad.com'
   },
   'cx': {
     id: 'cx', name: '国泰航空', nameEn: 'Cathay Pacific',
     country: '中国香港', code: 'CX',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Cathay_Pacific_logo.svg/200px-Cathay_Pacific_logo.svg.png',
+    logo: 'https://logo.clearbit.com/cathaypacific.com?size=200',
     desc: '国泰航空是香港载旗航空公司，寰宇一家创始成员。以香港国际机场为枢纽，以其卓越的亚洲待客之道和全球航线网络连接世界，多次获评全球最佳航空公司。',
     website: 'https://www.cathaypacific.com'
   },
   'ay': {
     id: 'ay', name: '芬兰航空', nameEn: 'Finnair',
     country: '芬兰', code: 'AY',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Finnair_logo.svg/200px-Finnair_logo.svg.png',
+    logo: 'https://logo.clearbit.com/finnair.com?size=200',
     desc: '芬兰航空是芬兰载旗航空公司，寰宇一家成员，总部位于赫尔辛基。以欧亚之间最短北极航线而闻名，赫尔辛基枢纽是连接欧洲与亚洲最快捷的门户之一。',
     website: 'https://www.finnair.com'
   },
   'tk': {
     id: 'tk', name: '土耳其航空', nameEn: 'Turkish Airlines',
     country: '土耳其', code: 'TK',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Turkish_Airlines_logo.svg/200px-Turkish_Airlines_logo.svg.png',
+    logo: 'https://logo.clearbit.com/turkishairlines.com?size=200',
     desc: '土耳其航空是星空联盟成员，总部位于伊斯坦布尔。以全球通航国家最多的航空公司著称，伊斯坦布尔新机场是连接欧亚非三大洲的超级枢纽。',
     website: 'https://www.turkishairlines.com'
   }
