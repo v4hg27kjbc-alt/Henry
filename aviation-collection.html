@@ -2413,7 +2413,11 @@ renderCards();
 
 // P2: Handle initial hash on page load
 if (window.location.hash) {
-  setTimeout(handleHashOpen, 100);
+  setTimeout(function() {
+    handleHashOpen();
+    // 清除 hash，避免刷新/重开页面时误触发自动打开
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+  }, 800);
 }
 
 // ===== 埋点系统 =====
@@ -2502,26 +2506,22 @@ function generateShareCard(id) {
   var domImg = document.querySelector('.card[data-id="' + id + '"] .card-image-wrap img');
 
   if (domImg && domImg.complete && domImg.naturalWidth > 0) {
-    // DOM 图片已成功加载，直接绘制并下载
     drawCard(ctx, domImg, W, H, a, c);
-    window._shareCanvas = canvas;
-    downloadShareCard();
+    showSharePreview(canvas);
   } else {
     // 兜底：尝试通过 proxyUrl 加载
     var img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = function() {
       drawCard(ctx, img, W, H, a, c);
-      window._shareCanvas = canvas;
-      downloadShareCard();
+      showSharePreview(canvas);
     };
     img.onerror = function() {
       // 使用 SVG 占位图
       var svgImg = new Image();
       svgImg.onload = function() {
         drawCard(ctx, svgImg, W, H, a, c);
-        window._shareCanvas = canvas;
-        downloadShareCard();
+        showSharePreview(canvas);
       };
       svgImg.src = createPlaceholderSVG(a, c);
     };
