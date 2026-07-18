@@ -1008,7 +1008,7 @@ body {
       <div class="sort-chip" data-sort="range"><span class="sort-label" id="sortRange">航程</span> <span class="sort-arrow">▲</span></div>
       <div class="sort-chip" data-sort="capacity"><span class="sort-label" id="sortCap">载客量</span> <span class="sort-arrow">▲</span></div>
     </div>
-    <button class="lucky-button" id="luckyButton" onclick="randomLucky()">🎲 手气不错</button>
+    <button class="sort-chip" id="luckyButton" onclick="randomLucky()" style="border-color:rgba(255,255,255,0.2)">🎲 手气不错</button>
   </div>
   <div class="search-results-hint" id="searchHint"></div>
 
@@ -1055,6 +1055,7 @@ const i18n = {
     sortSpeed: '速度',
     sortRange: '航程',
     sortCapacity: '载客量',
+    luckyButton: '🎲 手气不错',
 
     // --- 筛选 ---
     filterCivil: '民航客机',
@@ -1215,6 +1216,7 @@ const i18n = {
     sortSpeed: 'Speed',
     sortRange: 'Range',
     sortCapacity: 'Capacity',
+    luckyButton: "🎲 I'm Feeling Lucky",
 
     filterCivil: 'Airliners',
     filterFighter: 'Fighters',
@@ -1383,6 +1385,10 @@ function applyLanguage() {
     const el = document.getElementById(id);
     if (el) el.textContent = t(id);
   });
+
+  // Lucky button
+  var luckyBtn = document.getElementById('luckyButton');
+  if (luckyBtn) luckyBtn.textContent = t('luckyButton');
 
   // Country "all" chip
   const countryAllChip = document.getElementById('countryAllChip');
@@ -2278,6 +2284,12 @@ function renderRelatedSection(currentId) {
 function switchToAircraft(id) {
   closeDetail();
   setTimeout(function() { openDetail(id); }, 50);
+}
+
+function randomLucky() {
+  var idx = Math.floor(Math.random() * aircrafts.length);
+  var a = aircrafts[idx];
+  if (a) openDetail(a.id);
 }
 
 function openDetail(id) {
