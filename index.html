@@ -1116,7 +1116,7 @@ const i18n = {
     announcement: '16家航司Logo全新设计款上线，点击卡片查看详情',
 
     // --- 更新横幅 ---
-    updateBanner: '<span class="banner-highlight">「大图预览」</span>点击飞机图片可放大查看，支持滚轮缩放<span class="banner-sep">|</span><span class="banner-highlight">「相关推荐」</span>详情页底部查看同类飞机推荐',
+    updateBanner: '<span class="banner-highlight">「手气不错」</span>随机探索，全屏动画抽选飞机<span class="banner-sep">|</span><span class="banner-highlight">「大图预览」</span>点击飞机图片可放大查看，支持滚轮缩放<span class="banner-sep">|</span><span class="banner-highlight">「相关推荐」</span>详情页底部查看同类飞机推荐',
 
     // --- 规格标签 ---
     specCruiseSpeed: '巡航速度',
@@ -1272,7 +1272,7 @@ const i18n = {
     announcement: '16 New Airline Logo Designs Now Live — Tap Any Card for Details',
 
     // --- Update Banner ---
-    updateBanner: '<span class="banner-highlight">「Image Preview」</span>Click aircraft images to zoom in, scroll wheel supported<span class="banner-sep">|</span><span class="banner-highlight">「Related Aircraft」</span>View similar aircraft at the bottom of the detail page',
+    updateBanner: '<span class="banner-highlight">「Lucky Draw」</span>Random exploration with fullscreen dice animation<span class="banner-sep">|</span><span class="banner-highlight">「Image Preview」</span>Click aircraft images to zoom in, scroll wheel supported<span class="banner-sep">|</span><span class="banner-highlight">「Related Aircraft」</span>View similar aircraft at the bottom of the detail page',
 
     specCruiseSpeed: 'Cruise Speed',
     specMaxSpeed: 'Max Speed',
@@ -2466,10 +2466,10 @@ function dismissToast() {
 // ===== 更新通知横幅 =====
 function dismissUpdateBanner() {
   document.getElementById('updateBanner').classList.remove('visible');
-  localStorage.setItem('aviation-update-20260717-v2', '1');
+  localStorage.setItem('aviation-update-20260718-v3', '1');
 }
 function initUpdateBanner() {
-  if (localStorage.getItem('aviation-update-20260717-v2')) return;
+  if (localStorage.getItem('aviation-update-20260718-v3')) return;
   const banner = document.getElementById('updateBanner');
   const bannerText = document.getElementById('updateBannerText');
   bannerText.innerHTML = t('updateBanner');
