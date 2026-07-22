@@ -131,6 +131,47 @@ body {
   letter-spacing: 5px; text-transform: uppercase;
 }
 
+/* ===== 统计面板 ===== */
+.stats-panel {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 24px; justify-content: center;
+}
+.stat-card {
+  flex: 1; min-width: 140px; max-width: 200px;
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  padding: 18px 16px;
+  text-align: center;
+  box-shadow: var(--glass-shadow);
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+.stat-card:hover {
+  transform: translateY(-3px);
+  background: var(--card-hover-bg);
+  border-color: rgba(255,255,255,0.25);
+}
+.stat-card .stat-icon {
+  font-size: 1.6rem; margin-bottom: 6px;
+}
+.stat-card .stat-number {
+  font-size: 1.8rem; font-weight: 700; color: #fff;
+  letter-spacing: 0.5px;
+  font-variant-numeric: tabular-nums;
+}
+.stat-card .stat-label {
+  font-size: 0.72rem; color: var(--text-dim);
+  letter-spacing: 1px; text-transform: uppercase; margin-top: 2px;
+}
+@media (max-width: 768px) {
+  .stats-panel { gap: 8px; }
+  .stat-card { min-width: 100px; padding: 14px 10px; }
+  .stat-card .stat-number { font-size: 1.4rem; }
+  .stat-card .stat-icon { font-size: 1.3rem; }
+}
+
 /* ===== 标题淡入动画 ===== */
 .title-fade-in {
   opacity: 0;
@@ -1201,72 +1242,6 @@ body {
   .add-modal .form-row { grid-template-columns: 1fr; }
 }
 
-/* ===== 分享卡片预览 ===== */
-.share-overlay {
-  position: fixed; inset: 0; z-index: 200;
-  background: rgba(0,0,0,0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  display: flex; align-items: center; justify-content: center;
-  animation: overlayIn 0.3s ease;
-}
-.share-modal {
-  background: rgba(18, 28, 46, 0.9);
-  border: 1px solid var(--glass-border);
-  border-radius: 24px;
-  width: 92%; max-width: 660px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.55), 0 0 40px var(--accent-glow);
-  animation: modalSlideIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
-}
-.share-modal-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 24px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.share-modal-header h3 { color: #fff; font-size: 1.1rem; }
-.share-preview-wrap {
-  padding: 24px; text-align: center;
-}
-.share-preview-wrap canvas {
-  max-width: 100%; height: auto;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-}
-.share-modal-actions {
-  display: flex; gap: 10px; justify-content: center;
-  padding: 0 24px 24px;
-}
-.share-download-btn {
-  backdrop-filter: blur(10px);
-  background: rgba(79, 195, 247, 0.2);
-  border: 1px solid var(--accent);
-  border-radius: 50px;
-  padding: 10px 28px;
-  color: #fff; font-size: 0.9rem; font-weight: 600;
-  cursor: pointer; transition: all 0.3s ease;
-  font-family: inherit;
-}
-.share-download-btn:hover {
-  background: rgba(79, 195, 247, 0.35);
-  box-shadow: 0 0 18px var(--accent-glow);
-}
-.share-close-btn {
-  backdrop-filter: blur(10px);
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 50px;
-  padding: 10px 28px;
-  color: var(--text-dim); font-size: 0.9rem;
-  cursor: pointer; transition: all 0.3s ease;
-  font-family: inherit;
-}
-.share-close-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
-
-@media (max-width: 768px) {
-  .share-modal { width: 96%; }
-}
-
 /* ===== P3: 骨架屏占位卡片 ===== */
 .skeleton-card {
   backdrop-filter: blur(18px) saturate(180%);
@@ -1437,6 +1412,35 @@ body {
     <button class="hero-arrow hero-arrow-next" id="heroNext" aria-label="Next">&#8250;</button>
   </div>
 
+  <!-- 统计面板 -->
+  <div class="stats-panel" id="statsPanel">
+    <div class="stat-card">
+      <div class="stat-icon">&#9992;&#65039;</div>
+      <div class="stat-number" id="statTotalAircraft" data-target="0">0</div>
+      <div class="stat-label">收录飞机</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">&#127970;</div>
+      <div class="stat-number" id="statAirlines" data-target="0">0</div>
+      <div class="stat-label">运营航司</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">&#11088;</div>
+      <div class="stat-number" id="statCollection" data-target="0">0</div>
+      <div class="stat-label">我的收藏</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">&#127758;</div>
+      <div class="stat-number" id="statCountries" data-target="0">0</div>
+      <div class="stat-label">覆盖国家</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">&#128208;</div>
+      <div class="stat-number" id="statTypes" style="font-size:1rem;">--</div>
+      <div class="stat-label">类型分布</div>
+    </div>
+  </div>
+
   <div class="update-banner" id="updateBanner">
     <span id="updateBannerText"></span>
     <button class="banner-close" onclick="dismissUpdateBanner()" title="关闭">&times;</button>
@@ -1537,7 +1541,7 @@ const i18n = {
     announcement: '16家航司Logo全新设计款上线，点击卡片查看详情',
 
     // --- 更新横幅 ---
-    updateBanner: '<span class="banner-highlight">「首页 Banner」</span>精选飞机自动轮播展示<span class="banner-sep">|</span><span class="banner-highlight">「手气不错」</span>随机探索，全屏动画抽选飞机<span class="banner-sep">|</span><span class="banner-highlight">「大图预览」</span>点击飞机图片可放大查看，支持滚轮缩放<span class="banner-sep">|</span><span class="banner-highlight">「相关推荐」</span>详情页底部查看同类飞机推荐',
+    updateBanner: '<span class="banner-highlight">面板·动画·新机型</span>已上线',
 
     // --- 规格标签 ---
     specCruiseSpeed: '巡航速度',
@@ -2907,7 +2911,6 @@ function openDetail(id) {
           ).join('')}
         </div>
         <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap">
-          <button class="viewer3d-btn" onclick="event.stopPropagation();generateShareCard(${a.id})" style="background:transparent;border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.7);padding:8px 18px;border-radius:8px;cursor:pointer;font-size:0.85rem;">分享卡片</button>
         </div>
         ${airlineCards ? `<div class="airlines-section"><h3>${t('operatingAirlines')}</h3>${airlineCards}</div>` : ''}
         ${renderRelatedSection(a.id)}
@@ -2943,7 +2946,6 @@ document.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return;
   // 优先关闭最顶层弹窗
   if (document.querySelector('.image-lightbox')) { closeImageLightbox(); return; }
-  if (document.getElementById('shareOverlay')) { closeSharePreview(); return; }
   closeDetail();
 });
 
@@ -2975,10 +2977,10 @@ function dismissToast() {
 // ===== 更新通知横幅 =====
 function dismissUpdateBanner() {
   document.getElementById('updateBanner').classList.remove('visible');
-  localStorage.setItem('aviation-update-20260718-v4', '1');
+  localStorage.setItem('aviation-update-20260722-v5', '1');
 }
 function initUpdateBanner() {
-  if (localStorage.getItem('aviation-update-20260718-v4')) return;
+  if (localStorage.getItem('aviation-update-20260722-v5')) return;
   const banner = document.getElementById('updateBanner');
   const bannerText = document.getElementById('updateBannerText');
   bannerText.innerHTML = t('updateBanner');
@@ -3085,6 +3087,108 @@ function initHeroBanner() {
   startTimer();
 }
 
+// ===== 统计面板动画与更新 =====
+var _statsAnimated = false;
+function animateStats() {
+  if (_statsAnimated) { updateStatsNumbers(); return; }
+  _statsAnimated = true;
+  var cards = [
+    { el: document.getElementById('statTotalAircraft'), target: aircrafts.length },
+    { el: document.getElementById('statAirlines'), target: Object.keys(airlines).length },
+    { el: document.getElementById('statCollection'), target: collection.size },
+    { el: document.getElementById('statCountries'), target: getUniqueCountryCount() }
+  ];
+  // Types stat is text, handle separately
+  updateTypesStat();
+
+  var duration = 600;
+  cards.forEach(function(card) {
+    card.el.setAttribute('data-target', card.target);
+    animateNumber(card.el, card.target, duration);
+  });
+}
+
+function updateStatsNumbers() {
+  document.getElementById('statTotalAircraft').textContent = aircrafts.length;
+  document.getElementById('statTotalAircraft').setAttribute('data-target', aircrafts.length);
+  document.getElementById('statAirlines').textContent = Object.keys(airlines).length;
+  document.getElementById('statAirlines').setAttribute('data-target', Object.keys(airlines).length);
+  document.getElementById('statCollection').textContent = collection.size;
+  document.getElementById('statCollection').setAttribute('data-target', collection.size);
+  document.getElementById('statCountries').textContent = getUniqueCountryCount();
+  document.getElementById('statCountries').setAttribute('data-target', getUniqueCountryCount());
+  updateTypesStat();
+}
+
+function getUniqueCountryCount() {
+  var countries = new Set();
+  aircrafts.forEach(function(a) { if (a.country) countries.add(a.country); });
+  return countries.size;
+}
+
+function updateTypesStat() {
+  var types = { civil: 0, fighter: 0, bomber: 0, transport: 0, helicopter: 0 };
+  aircrafts.forEach(function(a) { if (types[a.category] !== undefined) types[a.category]++; });
+  document.getElementById('statTypes').textContent =
+    '民航 ' + types.civil + ' / 战斗 ' + types.fighter;
+}
+
+function animateNumber(el, target, duration) {
+  var start = 0;
+  var startTime = null;
+  function step(timestamp) {
+    if (!startTime) startTime = timestamp;
+    var progress = Math.min((timestamp - startTime) / duration, 1);
+    // easeOutCubic
+    var eased = 1 - Math.pow(1 - progress, 3);
+    var current = Math.round(eased * target);
+    el.textContent = current;
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      el.textContent = target;
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+// Use IntersectionObserver to trigger stats animation when visible
+(function initStatsObserver() {
+  var panel = document.getElementById('statsPanel');
+  if (!panel) return;
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        animateStats();
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  observer.observe(panel);
+  // Also trigger immediately if already visible
+  setTimeout(function() {
+    var rect = panel.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      animateStats();
+    }
+  }, 300);
+})();
+
+// Hook into renderCards to update stats after render
+var _origRenderCards = renderCards;
+renderCards = function() {
+  _origRenderCards();
+  updateStatsNumbers();
+};
+
+// Hook into toggleCollect to update collection stat
+var _origToggleCollect = toggleCollect;
+toggleCollect = function(id) {
+  _origToggleCollect(id);
+  updateStatsNumbers();
+};
+
+
 showToast();
 initUpdateBanner();
 createStars();
@@ -3159,245 +3263,6 @@ if (window.location.hash) {
   window._track('pv', { page: 'aviation-collection', title: document.title });
 })();
 
-// ===== 分享卡片生成 =====
-function generateShareCard(id) {
-  var a = aircrafts.find(function(x) { return x.id === id; });
-  if (!a) return;
-
-  var colors = {
-    civil: ['#0d47a1', '#1565c0', '#42a5f5'],
-    fighter: ['#1a237e', '#283593', '#5c6bc0'],
-    bomber: ['#263238', '#37474f', '#607d8b'],
-    transport: ['#1b5e20', '#2e7d32', '#66bb6a'],
-    helicopter: ['#4a148c', '#6a1b9a', '#ab47bc']
-  };
-  var c = colors[a.category] || colors.civil;
-
-  var W = 1200, H = 630;
-  var canvas = document.createElement('canvas');
-  canvas.width = W;
-  canvas.height = H;
-  var ctx = canvas.getContext('2d');
-
-  // 存储原图 URL，供下载回退使用
-  window._shareOriginalImage = a.image;
-
-  // 优先从页面 DOM 中获取已渲染的卡片封面图片
-  var domImg = document.querySelector('.card[data-id="' + id + '"] .card-image-wrap img');
-
-  if (domImg && domImg.complete && domImg.naturalWidth > 0) {
-    drawCard(ctx, domImg, W, H, a, c);
-    showSharePreview(canvas);
-  } else {
-    // 兜底：尝试通过 proxyUrl 加载
-    var img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = function() {
-      drawCard(ctx, img, W, H, a, c);
-      showSharePreview(canvas);
-    };
-    img.onerror = function() {
-      // 使用 SVG 占位图
-      var svgImg = new Image();
-      svgImg.onload = function() {
-        drawCard(ctx, svgImg, W, H, a, c);
-        showSharePreview(canvas);
-      };
-      svgImg.src = createPlaceholderSVG(a, c);
-    };
-    img.src = proxyUrl(a.image);
-  }
-}
-
-function createPlaceholderSVG(a, c) {
-  var w = 800, h = 400;
-  var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">' +
-    '<defs>' +
-      '<linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">' +
-        '<stop offset="0%" stop-color="' + c[0] + '"/>' +
-        '<stop offset="100%" stop-color="' + c[1] + '"/>' +
-      '</linearGradient>' +
-    '</defs>' +
-    '<rect width="' + w + '" height="' + h + '" fill="url(#bg2)"/>' +
-    '<ellipse cx="' + (w/2) + '" cy="' + (h*0.45) + '" rx="140" ry="14" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>' +
-    '<line x1="' + (w/2-130) + '" y1="' + (h*0.45) + '" x2="' + (w/2+130) + '" y2="' + (h*0.45) + '" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>' +
-    '<line x1="' + (w/2-20) + '" y1="' + (h*0.45) + '" x2="' + (w/2-120) + '" y2="' + (h*0.45-60) + '" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>' +
-    '<line x1="' + (w/2-20) + '" y1="' + (h*0.45) + '" x2="' + (w/2-120) + '" y2="' + (h*0.45+60) + '" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>' +
-    '<line x1="' + (w/2+20) + '" y1="' + (h*0.45) + '" x2="' + (w/2+110) + '" y2="' + (h*0.45-45) + '" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>' +
-    '<line x1="' + (w/2+20) + '" y1="' + (h*0.45) + '" x2="' + (w/2+110) + '" y2="' + (h*0.45+45) + '" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>' +
-    '<circle cx="' + (w/2-80) + '" cy="' + (h*0.45-35) + '" r="6" fill="rgba(255,255,255,0.1)"/>' +
-    '<circle cx="' + (w/2+70) + '" cy="' + (h*0.45-25) + '" r="6" fill="rgba(255,255,255,0.1)"/>' +
-  '</svg>';
-  return 'data:image/svg+xml,' + encodeURIComponent(svg);
-}
-
-function drawCard(ctx, img, W, H, a, c) {
-  var leftW = Math.floor(W * 0.45); // 540px 深色区
-  var rightW = W - leftW;           // 660px 渐变文字区
-  var rightPad = 60;
-
-  // ===== 左侧：深色区块 + 真实飞机图片 =====
-  var darkGrad = ctx.createLinearGradient(0, 0, 0, H);
-  darkGrad.addColorStop(0, '#0d1525');
-  darkGrad.addColorStop(1, '#050a16');
-  ctx.fillStyle = darkGrad;
-  ctx.fillRect(0, 0, leftW, H);
-
-  // 飞机图片 — contain 完整显示不裁剪
-  ctx.save();
-  ctx.fillStyle = '#050a16';
-  ctx.fillRect(0, 0, leftW, H);
-  var imgRatio = img.width / img.height || 1.5;
-  var boxRatio = leftW / H;
-  var drawW, drawH, drawX, drawY;
-  if (imgRatio > boxRatio) {
-    drawW = leftW;
-    drawH = leftW / imgRatio;
-    drawX = 0;
-    drawY = (H - drawH) / 2;
-  } else {
-    drawH = H;
-    drawW = H * imgRatio;
-    drawX = (leftW - drawW) / 2;
-    drawY = 0;
-  }
-  ctx.drawImage(img, drawX, drawY, drawW, drawH);
-  ctx.restore();
-
-  // 左侧底部遮罩：让图片底部自然融入深色背景
-  var fadeGrad = ctx.createLinearGradient(0, H - 120, 0, H);
-  fadeGrad.addColorStop(0, 'rgba(5,10,22,0)');
-  fadeGrad.addColorStop(1, 'rgba(5,10,22,0.9)');
-  ctx.fillStyle = fadeGrad;
-  ctx.fillRect(0, 0, leftW, H);
-
-  // ===== 右侧：渐变背景 + 错落文字 =====
-  var bgGrad = ctx.createLinearGradient(leftW, 0, W, H);
-  bgGrad.addColorStop(0, c[0]);
-  bgGrad.addColorStop(0.5, c[1]);
-  bgGrad.addColorStop(1, c[2]);
-  ctx.fillStyle = bgGrad;
-  ctx.fillRect(leftW, 0, rightW, H);
-
-  // 装饰圆
-  ctx.globalAlpha = 0.04;
-  ctx.fillStyle = '#ffffff';
-  ctx.beginPath();
-  ctx.arc(W - 140, 160, 220, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(leftW + 80, H - 100, 150, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.globalAlpha = 1;
-
-  var textX = leftW + rightPad;
-  var edgeR = W - rightPad;
-
-  // --- 顶部靠右：型号代码（小号，半透明灰） ---
-  ctx.textAlign = 'right';
-  ctx.fillStyle = 'rgba(255,255,255,0.32)';
-  ctx.font = '400 15px -apple-system, "PingFang SC", "Helvetica Neue", sans-serif';
-  ctx.fillText(a.code.toUpperCase(), edgeR, 80);
-
-  // --- 中上部偏左：飞机名称（大号粗体白色） ---
-  ctx.textAlign = 'left';
-  ctx.fillStyle = '#ffffff';
-  var nameText = t(a.name);
-  var nameSize = 50;
-  ctx.font = '700 ' + nameSize + 'px -apple-system, "PingFang SC", "Helvetica Neue", sans-serif';
-  var nameW = ctx.measureText(nameText).width;
-  if (nameW > rightW - rightPad * 2 && nameSize > 34) {
-    nameSize = Math.max(34, Math.floor((rightW - rightPad * 2) / nameW * nameSize));
-    ctx.font = '700 ' + nameSize + 'px -apple-system, "PingFang SC", "Helvetica Neue", sans-serif';
-  }
-  ctx.fillText(nameText, textX, 170);
-
-  // --- 中间偏右：3 项核心参数（纵向排列，右侧对齐） ---
-  var specs = a.specs;
-  var specKeys = Object.keys(specs).slice(0, 3);
-  ctx.textAlign = 'right';
-  var specY0 = 260;
-
-  specKeys.forEach(function(key, i) {
-    var y = specY0 + i * 96;
-    ctx.fillStyle = 'rgba(255,255,255,0.45)';
-    ctx.font = '400 14px -apple-system, "PingFang SC", sans-serif';
-    ctx.fillText(specLabel(key), edgeR - 30, y);
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '700 32px -apple-system, "PingFang SC", sans-serif';
-    ctx.fillText(specs[key], edgeR - 30, y + 36);
-  });
-
-  // --- 底部偏左：URL 次标题 ---
-  ctx.textAlign = 'left';
-  ctx.fillStyle = 'rgba(255,255,255,0.38)';
-  ctx.font = '400 15px -apple-system, "PingFang SC", "Helvetica Neue", sans-serif';
-  ctx.fillText('henry126923.pages.dev', textX, H - 44);
-
-  // --- 底部偏右：水印 ---
-  ctx.textAlign = 'right';
-  ctx.fillStyle = 'rgba(255,255,255,0.18)';
-  ctx.font = '400 13px -apple-system, "PingFang SC", sans-serif';
-  ctx.fillText('aviation-collection', edgeR, H - 44);
-}
-
-function showSharePreview(canvas) {
-  // 移除已有
-  var existing = document.getElementById('shareOverlay');
-  if (existing) existing.remove();
-
-  var overlay = document.createElement('div');
-  overlay.className = 'share-overlay';
-  overlay.id = 'shareOverlay';
-  overlay.innerHTML =
-    '<div class="share-modal">' +
-      '<div class="share-modal-header">' +
-        '<h3>分享卡片预览</h3>' +
-        '<div class="modal-close" onclick="closeSharePreview()" style="position:static">&times;</div>' +
-      '</div>' +
-      '<div class="share-preview-wrap" id="sharePreviewWrap"></div>' +
-      '<div class="share-modal-actions">' +
-        '<button class="share-download-btn" onclick="downloadShareCard()">下载 PNG</button>' +
-        '<button class="share-close-btn" onclick="closeSharePreview()">关闭</button>' +
-      '</div>' +
-    '</div>';
-
-  document.body.appendChild(overlay);
-  document.body.style.overflow = 'hidden';
-  document.getElementById('sharePreviewWrap').appendChild(canvas);
-
-  // 存储 canvas 引用供下载使用
-  window._shareCanvas = canvas;
-
-  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeSharePreview(); });
-}
-
-function downloadShareCard() {
-  if (!window._shareCanvas) return;
-  try {
-    var link = document.createElement('a');
-    link.download = 'aviation-collection-share.png';
-    link.href = window._shareCanvas.toDataURL('image/png');
-    link.click();
-  } catch (e) {
-    // Canvas 被跨域图片 taint，toDataURL 不可用，回退为打开原图
-    if (window._shareOriginalImage) {
-      window.open(window._shareOriginalImage, '_blank');
-    } else {
-      alert('无法下载：图片跨域限制。请右键预览图保存，或尝试打开原图。');
-    }
-  }
-}
-
-function closeSharePreview() {
-  var overlay = document.getElementById('shareOverlay');
-  if (overlay) overlay.remove();
-  // 如果详情弹窗仍存在，保持 overflow hidden
-  if (!document.getElementById('overlayContainer') || !document.getElementById('overlayContainer').children.length) {
-    document.body.style.overflow = '';
-  }
-  window._shareCanvas = null;
-}
 
 // ===== P2: Hash-based URL routing =====
 function handleHashOpen() {
