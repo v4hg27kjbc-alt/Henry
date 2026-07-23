@@ -14,7 +14,13 @@
 <meta name="twitter:description" content="飞行器收藏馆 - 收录全球经典民航客机、战斗机、轰炸机、运输机与直升机，含详细参数与运营航司信息">
 <meta name="twitter:image" content="https://commons.wikimedia.org/w/thumb.php?f=A6-EDY_A380_Emirates_31_jan_2013_jfk_(8442269364).jpg&amp;w=800">
 <link rel="canonical" href="https://henry126923.pages.dev/">
-<script defer src="https://cloud.umami.is/script.js" data-website-id="1b107f5a-12d4-4db7-a8bd-c1d9cd2ecbb7"></script>
+
+<!-- Umami Cloud 网站统计
+     获取 website-id：
+       1. 前往 https://cloud.umami.is 注册/登录
+       2. Settings → Websites → 添加网站，域名填 henry126923.pages.dev 或 gamecenter.cc.cd
+       3. 复制 Tracking code 中的 data-website-id 替换下方占位值 -->
+<script defer src="https://cloud.umami.is/script.js" data-website-id="YOUR_WEBSITE_ID"></script>
 
 <!-- P1: JSON-LD Structured Data -->
 <script type="application/ld+json">
@@ -849,6 +855,51 @@ body {
   margin-bottom: 14px; display: none;
 }
 
+/* ===== 搜索建议下拉 ===== */
+.suggestions-dropdown {
+  position: absolute; top: calc(100% + 8px); left: 0; right: 0;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(18, 28, 46, 0.95);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 6px 0;
+  display: none;
+  z-index: 100;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  animation: suggestIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes suggestIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.suggestions-dropdown.visible { display: block; }
+.suggestion-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.suggestion-item:hover {
+  background: rgba(79, 195, 247, 0.12);
+}
+.suggestion-item:first-child { border-radius: 12px 12px 0 0; }
+.suggestion-item:last-child { border-radius: 0 0 12px 12px; }
+.suggestion-thumb {
+  width: 30px; height: 20px; border-radius: 4px;
+  object-fit: cover; flex-shrink: 0;
+  background: rgba(255,255,255,0.06);
+}
+.suggestion-info { display: flex; flex-direction: column; gap: 1px; overflow: hidden; }
+.suggestion-name {
+  font-size: 0.85rem; color: #fff; font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.suggestion-code {
+  font-size: 0.72rem; color: var(--text-dim);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
 /* ===== 排序按钮组 ===== */
 .sort-group {
   display: flex; gap: 6px; flex-shrink: 0;
@@ -1388,11 +1439,14 @@ body {
   transition: opacity 0.5s ease;
 }
 
+
 </style>
 </head>
 <body>
 
 <div class="stars-layer" id="starsLayer"></div>
+
+
 <div class="announcement-toast" id="announceToast">
   <span class="toast-icon">&#9992;</span>
   <span id="toastMsg">体验全面升级</span>
@@ -1451,6 +1505,7 @@ body {
       <input type="text" class="search-input" id="searchInput" placeholder="" id="searchInputPH" autocomplete="off">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <button class="search-clear" id="searchClear" onclick="clearSearch()">&times;</button>
+      <div class="suggestions-dropdown" id="suggestionsDropdown"></div>
     </div>
     <div class="sort-group" id="sortGroup">
       <div class="sort-chip active" data-sort="speed"><span class="sort-label" id="sortSpeed">速度</span> <span class="sort-arrow">▲</span></div>
@@ -1462,12 +1517,12 @@ body {
   <div class="search-results-hint" id="searchHint"></div>
 
   <div class="filter-bar">
-    <div class="filter-chip active" data-filter="civil"><span class="filter-label" id="filterCivil">民航客机</span></div>
+    <div class="filter-chip" data-filter="civil"><span class="filter-label" id="filterCivil">民航客机</span></div>
     <div class="filter-chip" data-filter="fighter"><span class="filter-label" id="filterFighter">战斗机</span></div>
     <div class="filter-chip" data-filter="bomber"><span class="filter-label" id="filterBomber">轰炸机</span></div>
     <div class="filter-chip" data-filter="transport"><span class="filter-label" id="filterTransport">运输机</span></div>
     <div class="filter-chip" data-filter="helicopter"><span class="filter-label" id="filterHelicopter">直升机</span></div>
-    <div class="filter-chip" data-filter="all"><span class="filter-label" id="filterAll">全部</span></div>
+    <div class="filter-chip active" data-filter="all"><span class="filter-label" id="filterAll">全部</span></div>
     <div class="collection-count" id="collectionCount" data-pattern="collected">已收藏 0 架</div>
   </div>
 
@@ -2006,10 +2061,6 @@ const aircraftSlugs = {
 };
 aircrafts.forEach(a => { a.slug = aircraftSlugs[a.id] || ''; });
 
-// ===== 自定义机型加载与合并 =====
-var _customIdCounter = 100;
-(function() {
-  try {
     // 恢复 i18n
     var savedI18n = JSON.parse(localStorage.getItem('custom_i18n') || '{}');
     if (typeof savedI18n === 'object') {
@@ -2019,18 +2070,17 @@ var _customIdCounter = 100;
     }
     // 加载自定义机型
     var custom = JSON.parse(localStorage.getItem('custom_aircrafts') || '[]');
+    _customIdCounter = 100;
     if (custom.length) {
       custom.forEach(function(a) { a.slug = ''; a._custom = true; });
       [].push.apply(aircrafts, custom);
-      var maxId = 100;
-      custom.forEach(function(a) { if (a.id >= maxId) maxId = a.id + 1; });
-      _customIdCounter = maxId;
+      custom.forEach(function(a) { if (a.id >= _customIdCounter) _customIdCounter = a.id + 1; });
     }
   } catch(e) {}
 })();
 
 let collection = new Set(JSON.parse(localStorage.getItem('aviation_collection') || '[]'));
-let currentFilter = 'civil';
+let currentFilter = 'all';
 let currentCountry = 'all';
 let searchQuery = '';
 let sortBy = 'speed';
@@ -2458,13 +2508,67 @@ function initBackToTop() {
   });
 }
 
-// ===== 初始化事件监听 =====
+// ===== 搜索建议 =====
+var suggestionsDropdown = document.getElementById('suggestionsDropdown');
+
+function showSuggestions(query) {
+  if (!query) { suggestionsDropdown.classList.remove('visible'); return; }
+  var q = query.toLowerCase();
+  var matches = [];
+  for (var i = 0; i < aircrafts.length; i++) {
+    var a = aircrafts[i];
+    var nameText = t(a.name).toLowerCase();
+    var codeText = a.code.toLowerCase();
+    if (nameText.includes(q) || codeText.includes(q)) {
+      matches.push(a);
+      if (matches.length >= 5) break;
+    }
+  }
+  if (matches.length === 0) { suggestionsDropdown.classList.remove('visible'); return; }
+  var html = '';
+  for (var j = 0; j < matches.length; j++) {
+    var a = matches[j];
+    html += '<div class="suggestion-item" data-id="' + a.id + '">' +
+      '<img class="suggestion-thumb" src="' + a.image + '" alt="">' +
+      '<div class="suggestion-info">' +
+      '<span class="suggestion-name">' + t(a.name) + '</span>' +
+      '<span class="suggestion-code">' + a.code + '</span>' +
+      '</div></div>';
+  }
+  suggestionsDropdown.innerHTML = html;
+  suggestionsDropdown.classList.add('visible');
+}
+
+suggestionsDropdown.addEventListener('click', function(e) {
+  var item = e.target.closest('.suggestion-item');
+  if (!item) return;
+  var id = parseInt(item.dataset.id);
+  suggestionsDropdown.classList.remove('visible');
+  openDetail(id);
+});
+
+// Close suggestions on Escape or click outside
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') suggestionsDropdown.classList.remove('visible');
+});
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.search-wrap')) suggestionsDropdown.classList.remove('visible');
+});
+
+var _suggestTimer = null;
 document.getElementById('searchInput').addEventListener('input', (e) => {
   searchQuery = e.target.value;
   clearTimeout(window._searchDebounce);
   window._searchDebounce = setTimeout(function() {
     if (searchQuery.trim()) window._track('search', { query: searchQuery.trim() });
   }, 800);
+  clearTimeout(_suggestTimer);
+  var q = searchQuery.trim();
+  if (q) {
+    _suggestTimer = setTimeout(function() { showSuggestions(q); }, 200);
+  } else {
+    suggestionsDropdown.classList.remove('visible');
+  }
   renderCards();
 });
 
