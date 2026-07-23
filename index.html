@@ -1596,7 +1596,7 @@ const i18n = {
     announcement: '16家航司Logo全新设计款上线，点击卡片查看详情',
 
     // --- 更新横幅 ---
-    updateBanner: '<span class="banner-highlight">面板·动画·新机型</span>已上线',
+    updateBanner: '<span class="banner-highlight">快捷添加已修复</span>，重新上线',
 
     // --- 规格标签 ---
     specCruiseSpeed: '巡航速度',
@@ -2061,6 +2061,8 @@ const aircraftSlugs = {
 };
 aircrafts.forEach(a => { a.slug = aircraftSlugs[a.id] || ''; });
 
+(function() {
+  try {
     // 恢复 i18n
     var savedI18n = JSON.parse(localStorage.getItem('custom_i18n') || '{}');
     if (typeof savedI18n === 'object') {
